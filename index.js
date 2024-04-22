@@ -50,7 +50,7 @@ function getShortUrl(original_url, done) {
 app.post("/api/shorturl", function (req, res) {
   const url = req.body.url;
   if (url.match(/^https?:\/\//))
-    dns.lookup(url.replace(/^https?[:]\/\//, ""), (err, addr, v) => {
+    dns.lookup(new URL(url).hostname, (err, addr, v) => {
       if (err) return res.json({ error: "invalid url" });
       let short_url;
       function done(err, data) {
