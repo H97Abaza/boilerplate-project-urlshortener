@@ -27,6 +27,17 @@ function shortenUrl(url) {
   })
   return short_url
 }
+
+function getOriginalUrl(short_url) {
+  return url_mapping_registery.find((v) => v.short_url == parseInt(short_url))
+    ?.original_url;
+}
+
+function getShortUrl(original_url) {
+  return url_mapping_registery.find((v) => v.original_url == original_url)
+    ?.short_url;
+}
+
 // Your first API endpoint
 app.post('/api/shorturl', function(req, res) {
   const url = req.body.url;
@@ -35,15 +46,11 @@ app.post('/api/shorturl', function(req, res) {
       if (err) return res.json({ error: "invalid url" });
       res.json({
         original_url: url,
-        short_url: getOriginalUrl(url) ?? shortenUrl(url),
+        short_url: getShortUrl(url) ?? shortenUrl(url),
       });
     });
   else return res.json({ error: "invalid url" });
 });
-
-function getOriginalUrl(short_url) {
-  return url_mapping_registery.find(v=>v.short_url==parseInt(short_url))?.original_url
-}
 
 app.get('/api/shorturl/:shorturl',(req,res)=>{
   if (req.params.shorturl) res.redirect(getOriginalUrl(req.params.shorturl));
